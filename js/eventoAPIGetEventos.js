@@ -16,9 +16,9 @@ function carregarPg() {
             <h2>${eventos[i].name} - ${eventos[i].scheduled.replace(":00.000Z", "")}</h2>
             <h4>${eventos[i].attractions}</h4>
             <p>${eventos[i].description}</p>
-            <button ${eventos[i].getId} type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Reserve seu ingresso</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal${i}" data-bs-whatever="@getbootstrap">Reserve seu ingresso</button>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal${i}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -26,28 +26,24 @@ function carregarPg() {
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <form>
+      <form id="newreserva">
       <div class="mb-3" >
           <label for="nome" class="form-label">Nome</label>
           <input type="text" class="form-control" id="nome" aria-describedby="nome">
       </div>
       <div class="mb-3" >
           <label for="nome" class="form-label">Email</label>
-          <input type="text" class="form-control" id="nome" aria-describedby="nome">
+          <input type="text" class="form-control" id="email" aria-describedby="nome">
       </div>
       <div class="mb-3">
           <label for="lotacao" class="form-label">Quantidade de ingressos</label>
           <input type="number" class="form-control" id="lotacao" aria-describedby="lotacao">
       </div>
-      <div class="mb-3">
-          <label for="message-text" class="col-form-label">Id</label>
-          <textarea class="form-control" id="message-text"></textarea>
-      </div>
       </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Reservar Ingresso</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary" onclick="novaReserva('${eventos[i]._id}')">Reservar Ingresso</button>
       </div>
     </div>
   </div>
@@ -57,6 +53,8 @@ function carregarPg() {
         </article>
                 `;
                 }
+
+
 
                 container.forEach((element) => (element.innerHTML = htmlEventos));
             });
@@ -68,6 +66,49 @@ function carregarPg() {
 }
 
 carregarPg();
+
+
+async function novaReserva(idreserva){
+
+const formReserva = document.getElementById('newreserva');
+formReserva.addEventListener('submit', evento => 
+
+evento.preventDefault())
+
+   
+
+    let url = `https://xp41-soundgarden-api.herokuapp.com/bookings`
+
+    let nome = formReserva.elements['nome'].value
+    let email = formReserva.elements['email'].value
+    let lotacao = formReserva.elements['lotacao'].value
+
+   let novaReserva = {
+    "owner_name": nome,
+    "owner_email": email,
+    "number_tickets": lotacao,
+    "event_id": idreserva,
+    }
+
+    let request = new Request(url, {
+        method: "POST",
+        body: JSON.stringify(novaReserva),
+        headers: new Headers ({
+            'Content-type': 'application/json; charset=UTF-8'
+        })
+    })
+    
+   await fetch(request)
+    .then(response => response.json()) 
+    .then(json => console.log(json))
+    .then(alert("Reservado"))
+    .then(window.location.href = `${window.location.origin}/admin.html`)
+    .catch(err => console.log(err));
+};
+
+
+
+
 
 button.addEventListener("click", () => {
     contador += 6
