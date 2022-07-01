@@ -25,7 +25,7 @@ function carregarPg() {
                   <td>${eventos[i].number_tickets}</td>
                   <td>
                       
-                      <a href="excluir-evento.html?id=${eventos[i]._id}" class="btn btn-danger">excluir</a>
+                  <button onclick = apagarIngresso("${eventos[i]._id}") id = "delEventForm" class="btn btn-danger">excluir</button>
                   </td>
                 </tr>
                 `;
@@ -40,3 +40,15 @@ function carregarPg() {
 }
 
 carregarPg();
+
+function apagarIngresso(idIngresso){
+
+  let url = `https://xp41-soundgarden-api.herokuapp.com/bookings/${idIngresso}`;
+
+  fetch(url, {
+    method: 'DELETE'
+  })
+    .then(alert("Ingresso Deletado"))
+    .then(window.location.reload(true))
+    .catch((err) => console.log(err));
+} 
