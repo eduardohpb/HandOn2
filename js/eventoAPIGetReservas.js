@@ -1,25 +1,30 @@
 const container = document.querySelectorAll(".table tbody");
-const url = "https://xp41-soundgarden-api.herokuapp.com/events";
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const getId = urlParams.get("id");
+const url = `https://xp41-soundgarden-api.herokuapp.com/bookings/event/${getId}`;
 const button = document.querySelector("button");
-let contador = 3;
+
 
 function carregarPg() {
     fetch(url)
       .then((response) => response.json())
       .then(function (json) {
         let eventos = json;
+        if (eventos.length == 0){
+          window.alert("Sem Reservas")
+        }
         eventos.map(() => {
           htmlEventos = "";
-          for (let i = 0; i < contador; i++) {
+          for (let i = 0; i < eventos.length; i++) {
             htmlEventos += `
                 <tr>
                   <th scope="row">${i + 1}</th>
-                  <td>${eventos[i].scheduled}</td>
-                  <td>${eventos[i].name}</td>
-                  <td>${eventos[i].attractions}</td>
+                  <td>${eventos[i].owner_name}</td>
+                  <td>${eventos[i].owner_email}</td>
+                  <td>${eventos[i].number_tickets}</td>
                   <td>
-                      <a href="reservas.html?id=${eventos[i]._id}" class="btn btn-dark">ver reservas</a>
-                      <a href="editar-evento.html?id=${eventos[i]._id}" class="btn btn-secondary">editar</a>
+                      
                       <a href="excluir-evento.html?id=${eventos[i]._id}" class="btn btn-danger">excluir</a>
                   </td>
                 </tr>
@@ -30,13 +35,8 @@ function carregarPg() {
       })
       .catch(function () {
         console.log("error");
-        alert("error");
+       alert("error");
       });
 }
 
 carregarPg();
-
-button.addEventListener("click",() => {
-    contador += 10
-    carregarPg()
-})

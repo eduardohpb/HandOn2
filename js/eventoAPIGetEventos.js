@@ -102,7 +102,7 @@ evento.preventDefault())
     .then(response => response.json()) 
     .then(json => console.log(json))
     .then(alert("Reservado"))
-    .then(window.location.href = `${window.location.origin}/admin.html`)
+    .then(window.location.href = `${window.location.origin}/index.html`)
     .catch(err => console.log(err));
 };
 
